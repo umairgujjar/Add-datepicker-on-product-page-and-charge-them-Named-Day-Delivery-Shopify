@@ -1,12 +1,88 @@
 {{ '//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' | stylesheet_tag }}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js" type="text/javascript" defer="defer"></script>
-<script src="{{ 'datepicker.js' | asset_url }}"></script>
 
 {% comment %}
 1. Add above scripts in theme.liquid or on the start of this file.
+      
+      
+2. Add following label and input code where you want the datepicker to show up.
+    <label class="cart__instructions__label" for="date">Pick a delivery date</label>
+    <input id="date" type="text" placeholder="{{section.settings.datepicker_text}}" name="properties[Delivery Date]" readonly="readonly" class="input-full" />
 
-2. Add these 2 schema settings in section schema. you can get these at the end of this file too.
+3. Add Script at the end of this file to this section end.
+	<script>
+	  //Default is Next Day/Tomorrow Delivery
+  var min = +1;
+  var currentTime = new Date();
+
+  function dt() {
+
+  	//If Time is After 11 AM Then Minimum date to pick should be Day after tomorrow. And for Sunday.
+  	if (currentTime.getHours() >= 11 || currentTime.getDay() == 0) {
+  		min = +2;
+  	}
+
+  	// Special Treatment for Friday after 11 am. Should show Tuesday as first possible option.
+  	if (currentTime.getHours() >= 11 && currentTime.getDay() == 5) {
+  		min = +4;
+  	}
+
+  	// Special Treatment for Saturday. Show Tuesday As first possible Option
+  	if (currentTime.getDay() == 6) {
+  		min = +3;
+  	}
+
+  }
+  var dates = [{
+  	{
+  		section.settings.unavailable
+  	}
+  }];
+
+  function DisableDates(date) {
+  	if (date.getDay() == 0) {
+  		return [false, "", "Unavailable"];
+  	}
+  	//    var string = jQuery.datepicker.formatDate('dd-mm', date);
+  	var string = date.getDate() + "-" + (date.getMonth() + 1);
+  	return [dates.indexOf(string) == -1];
+  }
+
+  var previousValue = null;
+
+  dt();
+  $(function() {
+  	$("#date").datepicker({
+  		showButtonPanel: true,
+  		closeText: 'Clear', // Text to show for "close" button
+  		constrainInput: true,
+  		minDate: min,
+  		dateFormat: "dd/mm/yy",
+  		/*      showOn: "button",
+          buttonText: "Optional Pick Next/Named Day Delivery (£9) Order before 11am",
+   	*/
+  		onSelect: function(date) {
+  			if (previousValue == $(this).val()) {
+  				$("#date").datepicker('setDate', "");
+  				document.getElementById("date").value = "";
+  			}
+  			previousValue = $(this).val();
+  		},
+  		beforeShowDay: DisableDates,
+  		onClose: function(dateText, inst) {
+  			if ($(window.event.srcElement).hasClass('ui-datepicker-close')) {
+  				document.getElementById(this.id).value = "";
+  			}
+  		}
+
+  	}).next(".ui-datepicker-trigger").addClass("btn--outline btn--full btn--primary uppercase");
+
+  });
+	</script>
+	
+	
+4. Add these 2 schema settings in section schema. you can get these at the end of this file too.
       {
         "type": "text",
         "label": "List of unavailable days",
@@ -19,18 +95,83 @@
         "id": "datepicker_text",
         "label": "Date Picket Text"
       }
-      
-      
-3. Add following label and input code where you want the datepicker to show up.
-    <label class="cart__instructions__label" for="date">Pick a delivery date</label>
-    <input id="date" type="text" placeholder="{{datepicker_text}}" name="properties[Delivery Date]" readonly="readonly" class="input-full" />
-
-4. Include 
 {% endcomment %}
 
 
     <label class="cart__instructions__label" for="date">Pick a delivery date</label>
-    <input id="date" type="text" placeholder="{{datepicker_text}}" name="properties[Delivery Date]" readonly="readonly" class="input-full" />
+    <input id="date" type="text" placeholder="{{section.settings.datepicker_text}}" name="properties[Delivery Date]" readonly="readonly" class="input-full" />
+
+
+<script>
+  //Default is Next Day/Tomorrow Delivery
+  var min = +1;
+  var currentTime = new Date();
+
+  function dt() {
+
+  	//If Time is After 11 AM Then Minimum date to pick should be Day after tomorrow. And for Sunday.
+  	if (currentTime.getHours() >= 11 || currentTime.getDay() == 0) {
+  		min = +2;
+  	}
+
+  	// Special Treatment for Friday after 11 am. Should show Tuesday as first possible option.
+  	if (currentTime.getHours() >= 11 && currentTime.getDay() == 5) {
+  		min = +4;
+  	}
+
+  	// Special Treatment for Saturday. Show Tuesday As first possible Option
+  	if (currentTime.getDay() == 6) {
+  		min = +3;
+  	}
+
+  }
+  var dates = [{
+  	{
+  		section.settings.unavailable
+  	}
+  }];
+
+  function DisableDates(date) {
+  	if (date.getDay() == 0) {
+  		return [false, "", "Unavailable"];
+  	}
+  	//    var string = jQuery.datepicker.formatDate('dd-mm', date);
+  	var string = date.getDate() + "-" + (date.getMonth() + 1);
+  	return [dates.indexOf(string) == -1];
+  }
+
+  var previousValue = null;
+
+  dt();
+  $(function() {
+  	$("#date").datepicker({
+  		showButtonPanel: true,
+  		closeText: 'Clear', // Text to show for "close" button
+  		constrainInput: true,
+  		minDate: min,
+  		dateFormat: "dd/mm/yy",
+  		/*      showOn: "button",
+          buttonText: "Optional Pick Next/Named Day Delivery (£9) Order before 11am",
+   	*/
+  		onSelect: function(date) {
+  			if (previousValue == $(this).val()) {
+  				$("#date").datepicker('setDate', "");
+  				document.getElementById("date").value = "";
+  			}
+  			previousValue = $(this).val();
+  		},
+  		beforeShowDay: DisableDates,
+  		onClose: function(dateText, inst) {
+  			if ($(window.event.srcElement).hasClass('ui-datepicker-close')) {
+  				document.getElementById(this.id).value = "";
+  			}
+  		}
+
+  	}).next(".ui-datepicker-trigger").addClass("btn--outline btn--full btn--primary uppercase");
+
+  });
+</script>
+
 
 
 
