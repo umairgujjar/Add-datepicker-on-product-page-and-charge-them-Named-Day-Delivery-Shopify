@@ -1,0 +1,121 @@
+ {% comment %}
+ 1. Add code from line number 12 to 105 in this file to main-product.liquid
+ 
+ 2. Add 1 option in section schema.
+    {
+      "type": "product",
+      "label": "Date Pick Product",
+      "id": "date_prod"
+    }
+ {% endcomment %}   
+    
+{% assign named_delivery_product = section.settings.date_prod %}
+{% if named_delivery_product %}
+  {% assign id = named_delivery_product.variants.first.id %} 
+  {% assign named_delivery_products_in_cart = 0 %} 
+  
+  {% for item in cart.items %} 
+  	{% if item.id == id %} 
+  		{% assign named_delivery_products_in_cart = item.quantity %}
+  	{% endif %}
+  {% endfor %}
+
+<script>
+  Shopify.Cart = Shopify.Cart || {};
+
+  Shopify.Cart.GiftWrap = {};
+
+  Shopify.Cart.GiftWrap.set = function( quant ) {
+    var headers = new Headers({ 'Content-Type': 'application/json' });
+    {% comment %}
+    var devDate = document.getElementById("date").value;
+    {% endcomment %}
+    var request = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ 
+        updates: {
+          {{ id }}: quant,
+                 }   
+      })
+    };
+    fetch('/cart/update.js', request)
+    .then(function() {
+      location.href = '/cart';
+    });
+  }
+
+  Shopify.Cart.GiftWrap.remove = function() {
+    var headers = new Headers({ 'Content-Type': 'application/json' });
+
+    var request = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ updates: { {{ id }}: 0 }, attributes: { 'delivery-date': '' } })
+    };
+    fetch('/cart/update.js', request)
+    .then(function() {
+      location.href = '/cart';
+    });
+  }
+
+  // If we have nothing but named_delivery_product items in the cart.
+  {% if cart.items.size == 1 and named_delivery_products_in_cart > 0 %}
+  document.addEventListener("DOMContentLoaded", function(){
+    Shopify.Cart.GiftWrap.remove();
+  });
+
+  {% endif %}
+
+
+</script>
+{% endif %}
+
+
+{%- if cart.item_count > 0 -%}
+  {% assign date_products = 0 %}  
+  
+  {% for item in cart.items %}
+    {%- assign property_size = item.properties | size -%}
+  	{% if property_size > 0 %}
+        {% for p in item.properties %}
+  		  {%- assign first_character_in_key = p.first | truncate: 1, '' -%}
+          {% unless p.last == blank or first_character_in_key == '_' %}
+  
+          		{% if p.first == 'Delivery Date' %}
+ 					{% assign date_products = date_products | plus: 1 %}
+          		{% endif %}
+            
+          {% endunless %}
+        {% endfor %}
+    {% endif %}
+  {% endfor %}
+  
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+  {% if date_products > 0 and named_delivery_products_in_cart == 0 %}
+      Shopify.Cart.GiftWrap.set( {{date_products}} );
+  {% elsif date_products != named_delivery_products_in_cart %}
+      Shopify.Cart.GiftWrap.set( {{date_products}} );
+  {% elsif date_products == 0 and named_delivery_products_in_cart > 0 %}
+        Shopify.Cart.GiftWrap.remove();
+  {% endif %}
+	});
+</script>
+{% endif %}
+
+
+
+
+{% schema %}
+{
+  "name": "Cart page",
+  "settings": [
+    {
+      "type": "product",
+      "label": "Date Pick Product",
+      "id": "date_prod"
+    }
+  ]
+}
+{% endschema %}
