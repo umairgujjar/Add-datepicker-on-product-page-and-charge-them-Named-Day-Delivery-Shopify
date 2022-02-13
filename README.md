@@ -1,5 +1,5 @@
-# Add-datepicker-on-product-page-and-charge-them-Named-Day-Delivery-Shopify
-I wrote this code for Luxe Rosa on shopify
+# Add datepicker on product page and charge users forNamed Day Delivery Shopify
+I wrote this code on Luxe Rosa on shopify Expanse 2.3.0 theme
 https://www.luxerosa.com/products/black-large-square-rose-box-with-16-forever-roses
 
 
