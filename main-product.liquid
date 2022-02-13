@@ -1,0 +1,56 @@
+{{ '//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' | stylesheet_tag }}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js" type="text/javascript" defer="defer"></script>
+<script src="{{ 'datepicker.js' | asset_url }}"></script>
+
+{% comment %}
+1. Add above scripts in theme.liquid or on the start of this file.
+
+2. Add these 2 schema settings in section schema. you can get these at the end of this file too.
+      {
+        "type": "text",
+        "label": "List of unavailable days",
+        "info": "add dates with commas. add Date Dash (-) Month Comma (,). Dont add comma after last one. like: '3-1', '15-4', '18-4', '2-5', '2-6', '3-6', '29-8', '26-12', '27-12'",
+		    "id": "unavailable",
+        "default": "'3-1', '15-4', '18-4', '2-5', '2-6', '3-6', '29-8', '26-12', '27-12'"
+      },
+      {
+        "type": "text",
+        "id": "datepicker_text",
+        "label": "Date Picket Text"
+      }
+      
+      
+3. Add following label and input code where you want the datepicker to show up.
+    <label class="cart__instructions__label" for="date">Pick a delivery date</label>
+    <input id="date" type="text" placeholder="{{datepicker_text}}" name="properties[Delivery Date]" readonly="readonly" class="input-full" />
+
+4. Include 
+{% endcomment %}
+
+
+    <label class="cart__instructions__label" for="date">Pick a delivery date</label>
+    <input id="date" type="text" placeholder="{{datepicker_text}}" name="properties[Delivery Date]" readonly="readonly" class="input-full" />
+
+
+
+
+{% schema %}
+  {
+    "name": "Product",
+    "settings": [
+      {
+        "type": "text",
+        "label": "List of unavailable days",
+        "info": "add dates with commas. add Date Dash (-) Month Comma (,). Dont add comma after last one. like: '3-1', '15-4', '18-4', '2-5', '2-6', '3-6', '29-8', '26-12', '27-12'",
+		    "id": "unavailable",
+        "default": "'3-1', '15-4', '18-4', '2-5', '2-6', '3-6', '29-8', '26-12', '27-12'"
+      },
+      {
+        "type": "text",
+        "id": "datepicker_text",
+        "label": "Date Picket Text"
+      }
+    ]
+  }
+{% endschema %}
