@@ -8,4 +8,6 @@ You can open main-product.liquid for instructions and code to add on product-tem
 and can see main-cart.liquid for instructions and code to be added on cart template section.
 
 
-if you feel stuck anywhere. Feel free to message me on https://www.facebook.com/MrUmairGujjar/ or send a email at umairgujjar7@gmail.com
+Star this directory:star:
+Optionally you can follow me for more.
+Message on [Twitter](https://twitter.com/MrUmairGujjar), [LinkedIn](https://www.linkedin.com/in/umairgujjar/) or send a email at [umairgujjar7@gmail.com](mailto:umairgujjar7@gmail.com) if you need any help.
